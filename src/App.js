@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Particles from 'react-particles-js';
 import './App.css';
 
@@ -20,16 +20,33 @@ const particleOptions = {
   }
 }
 
-function App() {
-  return (
-    <div className="App">
-      <Particles params={particleOptions} className="particles"/>
-      <Navigation/>
-      <Logo />
-      <Rank />
-      <ImageLinkForm />
-    </div>
-  );
+class App extends Component {
+  constructor(){
+    super();
+    this.state = {
+      input: ''
+    }
+  }
+
+  onInputChange = (event) =>{
+    console.log(event.target.value);
+  }
+
+  onButtonClick = () => {
+    console.log('btn clicked');
+  }
+
+  render(){
+    return (
+      <div className="App">
+        <Particles params={particleOptions} className="particles"/>
+        <Navigation/>
+        <Logo />
+        <Rank />
+        <ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onButtonClick}/>
+      </div>
+    );
+  }
 }
 
 export default App;
