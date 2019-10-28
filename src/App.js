@@ -31,8 +31,28 @@ class App extends Component {
     super();
     this.state = {
       input: '',
-      imageURL: ''
+      imageURL: '',
+      faceBox: {}
     }
+  }
+
+  calculateFaceLocation(data){
+    const clarifaiFaceRegion = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const inputImage = document.getElementById('inputImage');
+    const width  = Number(inputImage.width);
+    const height = Number(inputImage.height);
+    
+    const boundingValues = {
+        leftColumn  : width * Number(clarifaiFaceRegion.left_col),
+        rightColumn : width - (width * Number(clarifaiFaceRegion.right_col)),
+        topRow      : height * Number(clarifaiFaceRegion.top_row),
+        bottomRow   : height - (height * Number(clarifaiFaceRegion.bottom_row))
+      }
+    return boundingValues;
+  }
+
+  setFaceBox(faceBox){
+    this.setState({faceBox: faceBox});
   }
 
   onInputChange = (event) =>{
@@ -43,9 +63,7 @@ class App extends Component {
     this.setState({imageURL: this.state.input});
     // clarifai api
     app.models.predict(Clarifai.FACE_DETECT_MODEL,this.state.input)
-      .then(response => {
-          console.log(response.outputs[0].data.regions[0].region_info.bounding_box);
-      })
+      .then(response => this.setFaceBox(this.calculateFaceLocation(response)))
       .catch( err => console.log(err));
   }
 
@@ -57,10 +75,11 @@ class App extends Component {
         <Logo />
         <Rank />
         <ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onButtonClick}/>
-        <FaceRecognition imageURL={this.state.imageURL}/>
+        <FaceRecognition imageURL={this.state.imageURL} boxModel={this.state.faceBox}/>
       </div>
     );
   }
 }
 
 export default App;
+// https://www.goldennumber.net/wp-content/uploads/2013/08/florence-colgate-england-most-beautiful-face.jpg
