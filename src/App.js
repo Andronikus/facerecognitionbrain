@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Particles from 'react-particles-js';
 import Clarifai from 'clarifai';
 import './App.css';
@@ -9,6 +9,8 @@ import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
+import SignIn from './components/SignIn/SignIn';
+import Register from './components/Register/Register';
 
 const particleOptions = {
   particles: {
@@ -32,7 +34,8 @@ class App extends Component {
     this.state = {
       input: '',
       imageURL: '',
-      faceBox: {}
+      faceBox: {},
+      route: 'signIn'
     }
   }
 
@@ -67,15 +70,44 @@ class App extends Component {
       .catch( err => console.log(err));
   }
 
+  onRouteChange = (route) => {
+    console.log('onRouteChange');
+    this.setState({route: route});
+  }
+
   render(){
+    let componentsToRender;
+
+    switch(this.state.route){
+      case 'signIn':
+        componentsToRender = <SignIn onRouteChange={this.onRouteChange}/>;
+        break;
+      case 'register':
+        componentsToRender = <Register onRouteChange={this.onRouteChange}/>;
+        break;
+      default:
+        componentsToRender = (<Fragment> 
+                                <Logo />
+                                <Rank />
+                                <ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onButtonClick}/>
+                                <FaceRecognition imageURL={this.state.imageURL} boxModel={this.state.faceBox}/>
+                              </Fragment>)
+    }
+    /*
+    this.state.route === 'signIn' ? <SignIn onRouteChange={this.onRouteChange}/> : 
+        <Fragment> 
+          <Logo />
+          <Rank />
+          <ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onButtonClick}/>
+          <FaceRecognition imageURL={this.state.imageURL} boxModel={this.state.faceBox}/>
+        </Fragment>
+    */
+
     return (
       <div className="App">
         <Particles params={particleOptions} className="particles"/>
-        <Navigation/>
-        <Logo />
-        <Rank />
-        <ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onButtonClick}/>
-        <FaceRecognition imageURL={this.state.imageURL} boxModel={this.state.faceBox}/>
+        <Navigation onRouteChange={this.onRouteChange}/>
+        {componentsToRender}
       </div>
     );
   }
