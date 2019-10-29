@@ -72,7 +72,6 @@ class App extends Component {
   }
 
   onRouteChange = (route) => {
-    console.log('route', route);
     route === 'home' ? this.setState({isSignIn: true}) : this.setState({isSignIn: false});
     this.setState({route: route});
   }
