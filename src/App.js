@@ -38,6 +38,7 @@ class App extends Component {
       route: 'signIn',
       isSignIn: false,
       userLoaded: {
+        id: '',
         name: '',
         rank: 0
       }
@@ -67,11 +68,34 @@ class App extends Component {
     this.setState({input: event.target.value});
   }
 
-  onButtonClick = () => {
+  onImageSubmit = () => {
     this.setState({imageURL: this.state.input});
     // clarifai api
     app.models.predict(Clarifai.FACE_DETECT_MODEL,this.state.input)
-      .then(response => this.setFaceBox(this.calculateFaceLocation(response)))
+      .then(response => {
+        if(response){
+          this.setFaceBox(this.calculateFaceLocation(response))
+          const data = {
+            id: this.state.userLoaded.id
+          }
+          const putReq = {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          }
+          fetch('http://localhost:3001/image', putReq)
+            .then(response => response.json())
+            //.then(data => this.setState({userLoaded: {...this.state.userLoaded, rank: data.rank}}))
+            
+            .then(data => {
+              console.log('data.rank', data);
+              this.setState({userLoaded: Object.assign(this.state.userLoaded, {rank: data.rank})})
+            }
+            )
+        }
+      })
       .catch( err => console.log(err));
   }
 
@@ -81,7 +105,7 @@ class App extends Component {
   }
 
   loadUserInfo = (data) => {
-      this.setState({userLoaded: {...this.state.userLoaded, name: data.name}})
+      this.setState({userLoaded: {...this.state.userLoaded, id: data.id, name: data.name}})
   }
 
   componentDidMount(){
@@ -104,7 +128,7 @@ class App extends Component {
         componentsToRender = (<Fragment> 
                                 <Logo />
                                 <Rank name={this.state.userLoaded.name} rank={this.state.userLoaded.rank}/>
-                                <ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onButtonClick}/>
+                                <ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onImageSubmit}/>
                                 <FaceRecognition imageURL={this.state.imageURL} boxModel={this.state.faceBox}/>
                               </Fragment>)
     }
