@@ -10,15 +10,11 @@ class SignIn extends Component {
 		}
 	}
 
-
-
 	onEmailChange = (event) => {
-		console.log('signInEmail', event.target.value);
 		this.setState({signInEmail: event.target.value})
 	}
 
 	onPasswordChange = (event) => {
-		console.log('signInPassword', event.target.value);
 		this.setState({signInPassword: event.target.value})
 	}
 
@@ -36,8 +32,6 @@ class SignIn extends Component {
 			body: JSON.stringify(data)
 		}
 
-
-		console.log('data', data);
 		fetch('http://localhost:3001/signin', postReq)
 			.then(response => response.json())
 			.then(data => console.log)

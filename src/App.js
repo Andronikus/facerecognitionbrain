@@ -10,7 +10,7 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import SignIn from './containers/SignIn/SignIn';
-import Register from './components/Register/Register';
+import Register from './containers/Register/Register';
 
 const particleOptions = {
   particles: {
@@ -36,7 +36,11 @@ class App extends Component {
       imageURL: '',
       faceBox: {},
       route: 'signIn',
-      isSignIn: false
+      isSignIn: false,
+      userLoaded: {
+        name: '',
+        rank: 0
+      }
     }
   }
 
@@ -76,6 +80,10 @@ class App extends Component {
     this.setState({route: route});
   }
 
+  loadUserInfo = (data) => {
+      this.setState({userLoaded: {...this.state.userLoaded, name: data.name}})
+  }
+
   componentDidMount(){
     fetch('http://localhost:3001/')
       .then(response => response.json())
@@ -90,12 +98,12 @@ class App extends Component {
         componentsToRender = <SignIn onRouteChange={this.onRouteChange}/>;
         break;
       case 'register':
-        componentsToRender = <Register onRouteChange={this.onRouteChange}/>;
+        componentsToRender = <Register onRouteChange={this.onRouteChange} loadUserInfo={this.loadUserInfo}/>;
         break;
       default:
         componentsToRender = (<Fragment> 
                                 <Logo />
-                                <Rank />
+                                <Rank name={this.state.userLoaded.name} rank={this.state.userLoaded.rank}/>
                                 <ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onButtonClick}/>
                                 <FaceRecognition imageURL={this.state.imageURL} boxModel={this.state.faceBox}/>
                               </Fragment>)
