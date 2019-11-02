@@ -9,7 +9,7 @@ import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
-import SignIn from './components/SignIn/SignIn';
+import SignIn from './containers/SignIn/SignIn';
 import Register from './components/Register/Register';
 
 const particleOptions = {
@@ -74,6 +74,12 @@ class App extends Component {
   onRouteChange = (route) => {
     route === 'home' ? this.setState({isSignIn: true}) : this.setState({isSignIn: false});
     this.setState({route: route});
+  }
+
+  componentDidMount(){
+    fetch('http://localhost:3001/')
+      .then(response => response.json())
+      .then(data => console.log(data));
   }
 
   render(){
