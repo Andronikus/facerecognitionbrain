@@ -119,7 +119,7 @@ class App extends Component {
 
     switch(this.state.route){
       case 'signIn':
-        componentsToRender = <SignIn onRouteChange={this.onRouteChange}/>;
+        componentsToRender = <SignIn onRouteChange={this.onRouteChange} loadUserInfo={this.loadUserInfo}/>;
         break;
       case 'register':
         componentsToRender = <Register onRouteChange={this.onRouteChange} loadUserInfo={this.loadUserInfo}/>;

@@ -24,6 +24,8 @@ class SignIn extends Component {
 			password: this.state.signInPassword
 		}
 
+		const { loadUserInfo, onRouteChange } = this.props;
+
 		const postReq = {
 			method: 'POST',
 			headers: {
@@ -34,9 +36,12 @@ class SignIn extends Component {
 
 		fetch('http://localhost:3001/signin', postReq)
 			.then(response => response.json())
-			.then(data => console.log)
-			
-		this.props.onRouteChange('home')
+			.then(user => {
+				if(user.id){
+					loadUserInfo(user);
+					onRouteChange('home');
+				}
+		})
 	}
 
 	render(){
@@ -69,10 +74,10 @@ class SignIn extends Component {
 					      </div>
 					    </fieldset>
 					}
-				    <div className="">
-				      <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
+				    <div>
+				      <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
 				      		 type="submit" 
-				      		 value="Sign in" 
+				      		 value="SignIn" 
 				      		 onClick={this.onFormSubmit}/>
 				    </div>
 				    <div className="lh-copy mt3">
