@@ -5,7 +5,7 @@ const navigation = ({ onRouteChange, isSignIn }) => {
 	let navItems;
 
 	if(isSignIn){
-		navItems = <p onClick={() => onRouteChange('signIn')} className="f3 link dim black underline pa3 pointer"> Sign out</p>;
+		navItems = <p onClick={() => onRouteChange('signOut')} className="f3 link dim black underline pa3 pointer"> Sign out</p>;
 	} else {
 		navItems = (<>
 						<p onClick={() => onRouteChange('signIn')} className="f3 link dim black underline pa3 pointer"> Sign In</p>
