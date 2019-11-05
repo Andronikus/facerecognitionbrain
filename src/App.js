@@ -89,13 +89,11 @@ class App extends Component {
           }
           fetch('http://localhost:3001/image', putReq)
             .then(response => response.json())
-            //.then(data => this.setState({userLoaded: {...this.state.userLoaded, rank: data.rank}}))
-            
             .then(data => {
               console.log('data.rank', data);
               this.setState({userLoaded: Object.assign(this.state.userLoaded, {rank: data.rank})})
-            }
-            )
+            })
+            .catch(console.log);
         }
       })
       .catch( err => console.log(err));
