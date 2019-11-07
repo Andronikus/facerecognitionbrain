@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Env from '../../environment';
 
 class SignIn extends Component {
 
@@ -34,7 +35,7 @@ class SignIn extends Component {
 			body: JSON.stringify(data)
 		}
 
-		fetch('http://localhost:3001/signin', postReq)
+		fetch(`${Env.SERVER_URL}/signin`, postReq)
 			.then(response => response.json())
 			.then(user => {
 				if(user.id){

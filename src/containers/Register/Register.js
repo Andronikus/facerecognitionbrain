@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Env from '../../environment';
 
 class Register extends Component {
 	
@@ -40,7 +41,7 @@ class Register extends Component {
 			body: JSON.stringify(data)
 		}
 
-		fetch('http://localhost:3001/register', postReq)
+		fetch(`${Env.SERVER_URL}/register`, postReq)
 			.then(response => response.json())
 			.then(user => {
 				if(user.id){

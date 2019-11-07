@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
+
 import './App.css';
 
 // own components
@@ -11,6 +11,7 @@ import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import SignIn from './containers/SignIn/SignIn';
 import Register from './containers/Register/Register';
+import Env from './environment';
 
 const particleOptions = {
   particles: {
@@ -23,10 +24,6 @@ const particleOptions = {
     }
   }
 }
-
-const app = new Clarifai.App({
- apiKey: '0188dad1d63f4aa3be99ff4db5167386'
-});
 
 const initialState = {
       input: '',
@@ -48,7 +45,7 @@ class App extends Component {
   }
 
   calculateFaceLocation(data){
-    const clarifaiFaceRegion = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const clarifaiFaceRegion = data.regions[0].region_info.bounding_box;
     const inputImage = document.getElementById('inputImage');
     const width  = Number(inputImage.width);
     const height = Number(inputImage.height);
@@ -72,11 +69,20 @@ class App extends Component {
 
   onImageSubmit = () => {
     this.setState({imageURL: this.state.input});
-    // clarifai api
-    app.models.predict(Clarifai.FACE_DETECT_MODEL,this.state.input)
-      .then(response => {
-        if(response){
-          this.setFaceBox(this.calculateFaceLocation(response))
+    
+    const postReq = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({input: this.state.input})
+          }
+
+    fetch(`${Env.SERVER_URL}/imageURL`, postReq)
+      .then(response => response.json())
+      .then(imageData => {
+        if(imageData){
+          this.setFaceBox(this.calculateFaceLocation(imageData))
           const data = {
             id: this.state.userLoaded.id
           }
@@ -87,7 +93,7 @@ class App extends Component {
             },
             body: JSON.stringify(data)
           }
-          fetch('http://localhost:3001/image', putReq)
+          fetch(`${Env.SERVER_URL}/image`, putReq)
             .then(response => response.json())
             .then(data => {
               console.log('data.rank', data);
@@ -116,12 +122,6 @@ class App extends Component {
 
   loadUserInfo = (data) => {
       this.setState({userLoaded: {...this.state.userLoaded, id: data.id, name: data.name, rank: data.entries}})
-  }
-
-  componentDidMount(){
-    fetch('http://localhost:3001/')
-      .then(response => response.json())
-      .then(data => console.log(data));
   }
 
   render(){
