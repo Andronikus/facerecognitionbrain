@@ -1,5 +1,5 @@
 const ENV = {
-	SERVER_URL: 'https://radiant-hollows-87097.herokuapp.com'
+	SERVER_URL: 'https://the-smart-cerebrum-api.herokuapp.com'
 }
 
 export default ENV;
