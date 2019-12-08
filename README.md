@@ -29,3 +29,7 @@
 #### Deployment
 
 * Heroku
+
+Example of a final result ( future improvement: dectect all faces in a picture)
+
+![Facerecognition Sign in](./screenshots/Facerecognition.png)
