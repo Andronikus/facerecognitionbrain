@@ -1,5 +1,5 @@
 const ENV = {
-	SERVER_URL: 'https://the-smart-cerebrum-api.herokuapp.com'
+	SERVER_URL: process.env.REACT_APP_SERVER_URL
 }
 
 export default ENV;
