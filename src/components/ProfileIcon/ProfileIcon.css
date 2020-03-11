@@ -1,0 +1,8 @@
+.dropMenuItem {
+    text-align: center;
+    cursor: pointer;
+}
+
+.dropMenuItem:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}

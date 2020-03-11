@@ -26,62 +26,62 @@ const particleOptions = {
 }
 
 const initialState = {
-      input: '',
-      imageURL: '',
-      faceBox: {},
-      route: 'signIn',
-      isSignIn: false,
-      userLoaded: {
-        id: '',
-        name: '',
-        rank: 0
-      }
-    }
+  input: '',
+  imageURL: '',
+  faceBox: {},
+  route: 'home',
+  isSignIn: true,
+  userLoaded: {
+    id: '',
+    name: '',
+    rank: 0
+  }
+}
 
 class App extends Component {
-  constructor(){
+  constructor() {
     super();
     this.state = initialState;
   }
 
-  calculateFaceLocation(data){
+  calculateFaceLocation(data) {
     const clarifaiFaceRegion = data.regions[0].region_info.bounding_box;
     const inputImage = document.getElementById('inputImage');
-    const width  = Number(inputImage.width);
+    const width = Number(inputImage.width);
     const height = Number(inputImage.height);
-    
+
     const boundingValues = {
-        leftColumn  : width * Number(clarifaiFaceRegion.left_col),
-        rightColumn : width - (width * Number(clarifaiFaceRegion.right_col)),
-        topRow      : height * Number(clarifaiFaceRegion.top_row),
-        bottomRow   : height - (height * Number(clarifaiFaceRegion.bottom_row))
-      }
+      leftColumn: width * Number(clarifaiFaceRegion.left_col),
+      rightColumn: width - (width * Number(clarifaiFaceRegion.right_col)),
+      topRow: height * Number(clarifaiFaceRegion.top_row),
+      bottomRow: height - (height * Number(clarifaiFaceRegion.bottom_row))
+    }
     return boundingValues;
   }
 
-  setFaceBox(faceBox){
-    this.setState({faceBox: faceBox});
+  setFaceBox(faceBox) {
+    this.setState({ faceBox: faceBox });
   }
 
-  onInputChange = (event) =>{
-    this.setState({input: event.target.value});
+  onInputChange = (event) => {
+    this.setState({ input: event.target.value });
   }
 
   onImageSubmit = () => {
-    this.setState({imageURL: this.state.input});
-    
+    this.setState({ imageURL: this.state.input });
+
     const postReq = {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({input: this.state.input})
-          }
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ input: this.state.input })
+    }
 
     fetch(`${Env.SERVER_URL}/imageURL`, postReq)
       .then(response => response.json())
       .then(imageData => {
-        if(imageData){
+        if (imageData) {
           this.setFaceBox(this.calculateFaceLocation(imageData))
           const data = {
             id: this.state.userLoaded.id
@@ -97,55 +97,55 @@ class App extends Component {
             .then(response => response.json())
             .then(data => {
               console.log('data.rank', data);
-              this.setState({userLoaded: Object.assign(this.state.userLoaded, {rank: data.rank})})
+              this.setState({ userLoaded: Object.assign(this.state.userLoaded, { rank: data.rank }) })
             })
             .catch(console.log);
         }
       })
-      .catch( err => console.log(err));
+      .catch(err => console.log(err));
   }
 
   onRouteChange = (route) => {
-    switch (route){
+    switch (route) {
       case 'home':
-        this.setState({isSignIn: true})
-        this.setState({route: 'home'});
+        this.setState({ isSignIn: true })
+        this.setState({ route: 'home' });
         break;
       case 'signOut':
         this.setState(initialState);
-        this.setState({route: 'signIn'});
+        this.setState({ route: 'signIn' });
         break;
       default:
-        this.setState({route: route});
+        this.setState({ route: route });
     }
   }
 
   loadUserInfo = (data) => {
-      this.setState({userLoaded: {...this.state.userLoaded, id: data.id, name: data.name, rank: data.entries}})
+    this.setState({ userLoaded: { ...this.state.userLoaded, id: data.id, name: data.name, rank: data.entries } })
   }
 
-  render(){
+  render() {
     let componentsToRender;
 
-    switch(this.state.route){
+    switch (this.state.route) {
       case 'signIn':
-        componentsToRender = <SignIn onRouteChange={this.onRouteChange} loadUserInfo={this.loadUserInfo}/>;
+        componentsToRender = <SignIn onRouteChange={this.onRouteChange} loadUserInfo={this.loadUserInfo} />;
         break;
       case 'register':
-        componentsToRender = <Register onRouteChange={this.onRouteChange} loadUserInfo={this.loadUserInfo}/>;
+        componentsToRender = <Register onRouteChange={this.onRouteChange} loadUserInfo={this.loadUserInfo} />;
         break;
       default:
-        componentsToRender = (<Fragment> 
-                                <Logo />
-                                <Rank name={this.state.userLoaded.name} rank={this.state.userLoaded.rank}/>
-                                <ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onImageSubmit}/>
-                                <FaceRecognition imageURL={this.state.imageURL} boxModel={this.state.faceBox}/>
-                              </Fragment>)
+        componentsToRender = (<Fragment>
+          <Logo />
+          <Rank name={this.state.userLoaded.name} rank={this.state.userLoaded.rank} />
+          <ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onImageSubmit} />
+          <FaceRecognition imageURL={this.state.imageURL} boxModel={this.state.faceBox} />
+        </Fragment>)
     }
 
     return (
       <div className="App">
-        <Particles params={particleOptions} className="particles"/>
+        <Particles params={particleOptions} className="particles" />
         <Navigation onRouteChange={this.onRouteChange} isSignIn={this.state.isSignIn} />
         {componentsToRender}
       </div>
