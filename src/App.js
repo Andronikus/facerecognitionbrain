@@ -11,6 +11,10 @@ import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import SignIn from './containers/SignIn/SignIn';
 import Register from './containers/Register/Register';
+import Modal from './components/Modal/Modal';
+import Profile from './components/Profile/Profile';
+
+
 import Env from './environment';
 
 const particleOptions = {
@@ -31,6 +35,7 @@ const initialState = {
   faceBox: {},
   route: 'home',
   isSignIn: true,
+  isModelOpen: false,
   userLoaded: {
     id: '',
     name: '',
@@ -124,8 +129,15 @@ class App extends Component {
     this.setState({ userLoaded: { ...this.state.userLoaded, id: data.id, name: data.name, rank: data.entries } })
   }
 
+  toogleModal = () => {
+    this.setState(prevState => ({ isModelOpen: !prevState.isModelOpen }))
+  }
+
   render() {
     let componentsToRender;
+
+    const { isModelOpen } = this.state;
+
 
     switch (this.state.route) {
       case 'signIn':
@@ -146,7 +158,13 @@ class App extends Component {
     return (
       <div className="App">
         <Particles params={particleOptions} className="particles" />
-        <Navigation onRouteChange={this.onRouteChange} isSignIn={this.state.isSignIn} />
+        <Navigation onRouteChange={this.onRouteChange} isSignIn={this.state.isSignIn} toogleModal={this.toogleModal} />
+        {
+          isModelOpen &&
+          <Modal>
+            <Profile toogleModal={this.toogleModal} />
+          </Modal>
+        }
         {componentsToRender}
       </div>
     );

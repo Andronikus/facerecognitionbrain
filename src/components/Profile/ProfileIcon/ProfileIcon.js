@@ -20,6 +20,16 @@ class ProfileIcon extends React.Component {
         ));
     }
 
+    viewProfileHandler = () => {
+        this.toggle();
+        this.props.toogleModal();
+    }
+
+    viewLogoutHandler = () => {
+        this.toggle();
+    }
+
+
     dropDownMenu = {
         backgroundColor: 'rgba(255, 255, 255, 0.7)',
         transform: 'translateX(-96px)',
@@ -37,12 +47,12 @@ class ProfileIcon extends React.Component {
                     >
                         <img
                             src="http://tachyons.io/img/logo.jpg"
-                            class="br-100 h3 w3 dib" alt="avatar" />
+                            className="br-100 h3 w3 dib" alt="avatar" />
                     </DropdownToggle>
                     <DropdownMenu right className="b--transparent shadow-5 menu" style={this.dropDownMenu}>
-                        <div className="dropMenuItem" onClick={this.toggle}>Profile</div>
+                        <div className="dropMenuItem" onClick={this.viewProfileHandler}>View Profile</div>
                         <DropdownItem divider />
-                        <div className="dropMenuItem" onClick={this.toggle}>Logout</div>
+                        <div className="dropMenuItem" onClick={this.viewLogoutHandler}>Logout</div>
                     </DropdownMenu>
                 </Dropdown>
             </div>
