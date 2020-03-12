@@ -21,9 +21,8 @@ class ProfileIcon extends React.Component {
     }
 
     dropDownMenu = {
-        transform: 'translateX(-40px)',
-        minWidth: '8rem',
         backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        transform: 'translateX(-96px)',
     }
 
     render() {
@@ -40,7 +39,7 @@ class ProfileIcon extends React.Component {
                             src="http://tachyons.io/img/logo.jpg"
                             class="br-100 h3 w3 dib" alt="avatar" />
                     </DropdownToggle>
-                    <DropdownMenu className="b--transparent shadow-5" style={this.dropDownMenu}>
+                    <DropdownMenu right className="b--transparent shadow-5 menu" style={this.dropDownMenu}>
                         <div className="dropMenuItem" onClick={this.toggle}>Profile</div>
                         <DropdownItem divider />
                         <div className="dropMenuItem" onClick={this.toggle}>Logout</div>
