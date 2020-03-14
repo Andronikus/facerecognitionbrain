@@ -39,7 +39,10 @@ const initialState = {
   userLoaded: {
     id: '',
     name: '',
-    rank: 0
+    rank: 0,
+    joinedAt: '',
+    age: '',
+    pet: '',
   }
 }
 
@@ -162,7 +165,7 @@ class App extends Component {
         {
           isModelOpen &&
           <Modal>
-            <Profile toogleModal={this.toogleModal} />
+            <Profile toogleModal={this.toogleModal} userInfo={this.state.userLoaded} />
           </Modal>
         }
         {componentsToRender}
