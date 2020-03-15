@@ -25,7 +25,8 @@ class ProfileIcon extends React.Component {
         this.props.toogleModal();
     }
 
-    viewLogoutHandler = () => {
+    onLogoutHandler = () => {
+        this.props.routeChange('signIn');
         this.toggle();
     }
 
@@ -52,7 +53,7 @@ class ProfileIcon extends React.Component {
                     <DropdownMenu right className="b--transparent shadow-5 menu" style={this.dropDownMenu}>
                         <div className="dropMenuItem" onClick={this.viewProfileHandler}>View Profile</div>
                         <DropdownItem divider />
-                        <div className="dropMenuItem" onClick={this.viewLogoutHandler}>Logout</div>
+                        <div className="dropMenuItem" onClick={this.onLogoutHandler}>Logout</div>
                     </DropdownMenu>
                 </Dropdown>
             </div>

@@ -33,14 +33,14 @@ const initialState = {
   input: '',
   imageURL: '',
   faceBox: {},
-  route: 'home',
-  isSignIn: true,
+  route: 'signIn',
+  isSignIn: false,
   isModelOpen: false,
   userLoaded: {
     id: '',
     name: '',
     rank: 0,
-    joinedAt: '',
+    joined_at: '',
     age: '',
     pet: '',
   }
@@ -124,12 +124,12 @@ class App extends Component {
         this.setState({ route: 'signIn' });
         break;
       default:
-        this.setState({ route: route });
+        this.setState({ isSignIn: false, route: route });
     }
   }
 
   loadUserInfo = (data) => {
-    this.setState({ userLoaded: { ...this.state.userLoaded, id: data.id, name: data.name, rank: data.entries } })
+    this.setState({ userLoaded: { ...this.state.userLoaded, id: data.id, name: data.name, rank: data.rank, joined_at: data.joined_at, age: data.age, pet: data.pet } })
   }
 
   toogleModal = () => {
@@ -165,7 +165,7 @@ class App extends Component {
         {
           isModelOpen &&
           <Modal>
-            <Profile toogleModal={this.toogleModal} userInfo={this.state.userLoaded} />
+            <Profile toogleModal={this.toogleModal} userInfo={this.state.userLoaded} loadUserInfo={this.loadUserInfo} />
           </Modal>
         }
         {componentsToRender}
