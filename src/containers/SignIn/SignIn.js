@@ -37,9 +37,9 @@ class SignIn extends Component {
 
 		fetch(`${Env.SERVER_URL}/signin`, postReq)
 			.then(response => response.json())
-			.then(user => {
-				if (user.id) {
-					loadUserInfo({ ...user, rank: user.entries });
+			.then(session => {
+				if (session.userId) {
+					//loadUserInfo({ ...user, rank: user.entries });
 					onRouteChange('home');
 				}
 			})
