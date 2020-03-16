@@ -136,6 +136,38 @@ class App extends Component {
     this.setState(prevState => ({ isModelOpen: !prevState.isModelOpen }))
   }
 
+  componentDidMount(){
+    const authToken = window.sessionStorage.getItem('token');
+
+    if(authToken){
+      fetch(`${Env.SERVER_URL}/signin`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': authToken  
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data && data.userId){
+          // get profile info
+          fetch(`${Env.SERVER_URL}/profile/${data.userId}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': authToken
+            }
+          })
+          .then(res => res.json())
+          .then(data => {
+            this.loadUserInfo({...data, rank: data.entries});
+            this.onRouteChange('home');
+          })
+          .catch(console.log);
+        }
+      })
+    }
+  }
+
   render() {
     let componentsToRender;
 

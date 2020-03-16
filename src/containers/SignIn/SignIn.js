@@ -19,6 +19,10 @@ class SignIn extends Component {
 		this.setState({ signInPassword: event.target.value })
 	}
 
+	setAuthTokenInSession = token => {
+		window.sessionStorage.setItem('token', token);
+	}
+
 	onFormSubmit = () => {
 		const data = {
 			email: this.state.signInEmail,
@@ -38,11 +42,22 @@ class SignIn extends Component {
 		fetch(`${Env.SERVER_URL}/signin`, postReq)
 			.then(response => response.json())
 			.then(session => {
-				if (session.userId) {
-					//loadUserInfo({ ...user, rank: user.entries });
-					onRouteChange('home');
+				if (session && session.userId && session.token) {
+					fetch(`${Env.SERVER_URL}/profile/${session.userId}`, {
+			            headers: {
+			              'Content-Type': 'application/json',
+			              'Authorization': session.token
+			            }
+			        })
+			        .then(res => res.json())
+			        .then(data => {
+			        	this.setAuthTokenInSession(session.token);
+			            loadUserInfo({...data, rank: data.entries});
+			            onRouteChange('home');
+			        })
+			        .catch(console.log);
 				}
-			})
+		})
 	}
 
 	render() {
