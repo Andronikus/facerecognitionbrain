@@ -34,16 +34,20 @@ class Profile extends React.Component {
         fetch(`${Env.SERVER_URL}/profile/${this.props.userInfo.id}`, {
             method: 'post',
             headers: {
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Authorization': window.sessionStorage.getItem('token'),
             },
             body: JSON.stringify({ formProfile: data })
         })
-            .then(res => {
+        .then(res => {
+            const {status} = res;
+            
+            if(status === 200 || status === 304){
                 this.props.toogleModal();
-                console.log({ ...this.props.userInfo, ...this.state });
                 this.props.loadUserInfo({ ...this.props.userInfo, ...data });
-            })
-            .catch(err => console.log(err));
+            }
+        })
+        .catch(err => console.log(err));
     }
 
     render() {

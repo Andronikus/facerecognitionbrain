@@ -81,7 +81,8 @@ class App extends Component {
     const postReq = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': window.sessionStorage.getItem('token')
       },
       body: JSON.stringify({ input: this.state.input })
     }
@@ -97,14 +98,14 @@ class App extends Component {
           const putReq = {
             method: 'PUT',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'Authorization': window.sessionStorage.getItem('token')
             },
             body: JSON.stringify(data)
           }
           fetch(`${Env.SERVER_URL}/image`, putReq)
             .then(response => response.json())
             .then(data => {
-              console.log('data.rank', data);
               this.setState({ userLoaded: Object.assign(this.state.userLoaded, { rank: data.rank }) })
             })
             .catch(console.log);
