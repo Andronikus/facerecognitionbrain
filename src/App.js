@@ -194,7 +194,7 @@ class App extends Component {
     return (
       <div className="App">
         <Particles params={particleOptions} className="particles" />
-        <Navigation onRouteChange={this.onRouteChange} isSignIn={this.state.isSignIn} toogleModal={this.toogleModal} />
+        <Navigation onRouteChange={this.onRouteChange} isSignIn={this.state.isSignIn} toogleModal={this.toogleModal}/>
         {
           isModelOpen &&
           <Modal>

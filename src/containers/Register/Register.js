@@ -36,7 +36,7 @@ class Register extends Component {
 		const postReq = {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(data)
 		}
@@ -44,8 +44,9 @@ class Register extends Component {
 		fetch(`${Env.SERVER_URL}/register`, postReq)
 			.then(response => response.json())
 			.then(user => {
+				console.log(user);
 				if(user.id){
-					loadUserInfo(user);
+					loadUserInfo({...user, rank: user.entries});
 					onRouteChange('home');
 				}
 			})

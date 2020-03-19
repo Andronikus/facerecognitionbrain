@@ -1,6 +1,8 @@
 import React from 'react';
 import { Dropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap';
 
+import ENV from '../../../environment';
+
 import './ProfileIcon.css';
 
 class ProfileIcon extends React.Component {
@@ -26,6 +28,22 @@ class ProfileIcon extends React.Component {
     }
 
     onLogoutHandler = () => {
+        const sessionToken = window.sessionStorage.getItem('token');
+
+        if(sessionToken){
+            fetch(`${ENV.SERVER_URL}/logout`, {
+                method: 'post',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({sessionToken})
+            })
+            .then(res => {
+                return res.status === 200 ? window.sessionStorage.removeItem('token') : null;
+            })
+            .catch( err => console.log(err));
+        }
+
         this.props.routeChange('signIn');
         this.toggle();
     }
