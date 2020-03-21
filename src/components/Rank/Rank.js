@@ -24,6 +24,12 @@ class Rank extends React.Component {
 		this.getEmoji(this.props.rank);
 	}
 
+	componentDidUpdate(prevProps,prevState){
+		if(this.props.rank !== prevProps.rank){
+			this.getEmoji(this.props.rank);
+		}
+	}
+
 	render(){
 		const {name, rank} = this.props;
 		const {rankEmogi} = this.state;

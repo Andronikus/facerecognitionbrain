@@ -24,6 +24,10 @@ class Register extends Component {
 		this.setState({password: event.target.value});
 	}
 
+	setAuthTokenInSession = token => {
+		window.sessionStorage.setItem('token', token);
+	}
+
 	onUserRegister = () => {
 		const {onRouteChange, loadUserInfo} = this.props;
 
@@ -43,11 +47,23 @@ class Register extends Component {
 
 		fetch(`${Env.SERVER_URL}/register`, postReq)
 			.then(response => response.json())
-			.then(user => {
-				console.log(user);
-				if(user.id){
-					loadUserInfo({...user, rank: user.entries});
-					onRouteChange('home');
+			.then(session => {
+				console.log(session);
+				if(session.success && session.userId){
+					
+					fetch(`${Env.SERVER_URL}/profile/${session.userId}`,{
+						method: 'get',
+						headers: {
+							'Authorization': session.token
+						}
+					})
+					.then(res => res.json())
+					.then(data => {
+						this.setAuthTokenInSession(session.token);
+			            loadUserInfo({...data, rank: data.entries});
+			            onRouteChange('home');
+					})
+					.catch(console.log);
 				}
 			})
 			.catch(err => console.log(err));
