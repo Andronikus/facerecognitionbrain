@@ -1,4 +1,6 @@
 import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+
 import Particles from 'react-particles-js';
 
 import './App.css';
@@ -36,14 +38,6 @@ const initialState = {
   route: 'signIn',
   isSignIn: false,
   isModelOpen: false,
-  userLoaded: {
-    id: '',
-    name: '',
-    rank: 0,
-    joined_at: '',
-    age: '',
-    pet: '',
-  }
 }
 
 class App extends Component {
@@ -129,10 +123,6 @@ class App extends Component {
     }
   }
 
-  loadUserInfo = (data) => {
-    this.setState({ userLoaded: { ...this.state.userLoaded, id: data.id, name: data.name, rank: data.rank, joined_at: data.joined_at, age: data.age, pet: data.pet } })
-  }
-
   toogleModal = () => {
     this.setState(prevState => ({ isModelOpen: !prevState.isModelOpen }))
   }
@@ -173,9 +163,9 @@ class App extends Component {
     let componentsToRender;
 
     const { isModelOpen } = this.state;
+    const { currentRoute, name, rank, isSignedIn } = this.props;
 
-
-    switch (this.state.route) {
+    switch (currentRoute) {
       case 'signIn':
         componentsToRender = <SignIn onRouteChange={this.onRouteChange} loadUserInfo={this.loadUserInfo} />;
         break;
@@ -185,7 +175,7 @@ class App extends Component {
       default:
         componentsToRender = (<Fragment>
           <Logo />
-          <Rank name={this.state.userLoaded.name} rank={this.state.userLoaded.rank} />
+          <Rank name={name} rank={rank} />
           <ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onImageSubmit} />
           <FaceRecognition imageURL={this.state.imageURL} boxModel={this.state.faceBox} />
         </Fragment>)
@@ -194,7 +184,7 @@ class App extends Component {
     return (
       <div className="App">
         <Particles params={particleOptions} className="particles" />
-        <Navigation onRouteChange={this.onRouteChange} isSignIn={this.state.isSignIn} toogleModal={this.toogleModal}/>
+        <Navigation onRouteChange={this.onRouteChange} isSignIn={isSignedIn} toogleModal={this.toogleModal}/>
         {
           isModelOpen &&
           <Modal>
@@ -207,5 +197,10 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  currentRoute: state.route.currentRoute,
+  ...state.user,
+})
+
+export default connect(mapStateToProps)(App);
 // https://www.goldennumber.net/wp-content/uploads/2013/08/florence-colgate-england-most-beautiful-face.jpg
