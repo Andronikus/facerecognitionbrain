@@ -7,6 +7,12 @@ export const userSignIn = userSignInInfo => {
     }
 }
 
+export const userAlreadySigned = () => {
+    return {
+        type: userActionsTypes.USER_ALREADY_SIGNED,
+    }
+}
+
 export const userSignOut = () => {
     return {
         type: userActionsTypes.USER_SIGN_OUT,

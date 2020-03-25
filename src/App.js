@@ -2,6 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 
 import Particles from 'react-particles-js';
+import { userAlreadySigned } from './redux/reducers/user/user.action';
+import { submitImage } from './redux/reducers/image/image.action';
 
 import './App.css';
 
@@ -17,8 +19,6 @@ import Modal from './components/Modal/Modal';
 import Profile from './components/Profile/Profile';
 
 
-import Env from './environment';
-
 const particleOptions = {
   particles: {
     number: {
@@ -33,10 +33,7 @@ const particleOptions = {
 
 const initialState = {
   input: '',
-  imageURL: '',
-  faceBox: {},
   route: 'signIn',
-  isSignIn: false,
   isModelOpen: false,
 }
 
@@ -46,66 +43,13 @@ class App extends Component {
     this.state = initialState;
   }
 
-  calculateFaceLocation(data) {
-    const clarifaiFaceRegion = data.regions[0].region_info.bounding_box;
-    const inputImage = document.getElementById('inputImage');
-    const width = Number(inputImage.width);
-    const height = Number(inputImage.height);
-
-    const boundingValues = {
-      leftColumn: width * Number(clarifaiFaceRegion.left_col),
-      rightColumn: width - (width * Number(clarifaiFaceRegion.right_col)),
-      topRow: height * Number(clarifaiFaceRegion.top_row),
-      bottomRow: height - (height * Number(clarifaiFaceRegion.bottom_row))
-    }
-    return boundingValues;
-  }
-
-  setFaceBox(faceBox) {
-    this.setState({ faceBox: faceBox });
-  }
-
   onInputChange = (event) => {
     this.setState({ input: event.target.value });
   }
 
   onImageSubmit = () => {
-    this.setState({ imageURL: this.state.input });
-
-    const postReq = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': window.sessionStorage.getItem('token')
-      },
-      body: JSON.stringify({ input: this.state.input })
-    }
-
-    fetch(`${Env.SERVER_URL}/imageURL`, postReq)
-      .then(response => response.json())
-      .then(imageData => {
-        if (imageData) {
-          this.setFaceBox(this.calculateFaceLocation(imageData))
-          const data = {
-            id: this.state.userLoaded.id
-          }
-          const putReq = {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': window.sessionStorage.getItem('token')
-            },
-            body: JSON.stringify(data)
-          }
-          fetch(`${Env.SERVER_URL}/image`, putReq)
-            .then(response => response.json())
-            .then(data => {
-              this.setState({ userLoaded: Object.assign(this.state.userLoaded, { rank: data.rank }) })
-            })
-            .catch(console.log);
-        }
-      })
-      .catch(err => console.log(err));
+    const { id, submitImage} = this.props;
+    submitImage({imageURL: this.state.input, userID: id});
   }
 
   onRouteChange = (route) => {
@@ -128,42 +72,14 @@ class App extends Component {
   }
 
   componentDidMount(){
-    const authToken = window.sessionStorage.getItem('token');
-
-    if(authToken){
-      fetch(`${Env.SERVER_URL}/signin`, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': authToken  
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        if(data && data.userId){
-          // get profile info
-          fetch(`${Env.SERVER_URL}/profile/${data.userId}`, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': authToken
-            }
-          })
-          .then(res => res.json())
-          .then(data => {
-            this.loadUserInfo({...data, rank: data.entries});
-            this.onRouteChange('home');
-          })
-          .catch(console.log);
-        }
-      })
-    }
+    this.props.userAlreadySigned();
   }
 
   render() {
     let componentsToRender;
 
     const { isModelOpen } = this.state;
-    const { currentRoute, name, rank, isSignedIn } = this.props;
+    const { currentRoute, name, rank, isSignedIn,imageURL,faceBox } = this.props;
 
     switch (currentRoute) {
       case 'signIn':
@@ -177,7 +93,7 @@ class App extends Component {
           <Logo />
           <Rank name={name} rank={rank} />
           <ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onImageSubmit} />
-          <FaceRecognition imageURL={this.state.imageURL} boxModel={this.state.faceBox} />
+          <FaceRecognition imageURL={imageURL} boxModel={faceBox} />
         </Fragment>)
     }
 
@@ -200,7 +116,14 @@ class App extends Component {
 const mapStateToProps = (state) => ({
   currentRoute: state.route.currentRoute,
   ...state.user,
+  imageURL: state.image.imageURL,
+  faceBox: state.image.faceBox,
+});
+
+const mapDispatchToProps = dispatch => ({
+  userAlreadySigned: () => dispatch(userAlreadySigned()),
+  submitImage: (imageInfo) => dispatch(submitImage(imageInfo)),
 })
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps,mapDispatchToProps)(App);
 // https://www.goldennumber.net/wp-content/uploads/2013/08/florence-colgate-england-most-beautiful-face.jpg

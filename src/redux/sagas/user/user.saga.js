@@ -20,6 +20,20 @@ function* userSignIn(action){
     }
 }
 
+function* userAlreadySignedIn(){
+    try{
+        const authToken = yield call(Api.getAuthToken);
+        const signinResult = yield call(Api.userSignin, {}, authToken);
+        const userProfile = yield call(Api.getUserProfile, signinResult.result.userId,authToken);
+        const {result} = userProfile;
+        yield put(setUserInfo({...result, rank: result.entries, joinedAt: result.joined_at, isSignedIn: true}));
+        yield put(goHome());
+    }
+    catch(error){
+        console.log('error', error);
+    }
+}
+
 function* userSignOut(){
     try{
         const authToken = yield call(Api.getAuthToken);
@@ -38,4 +52,8 @@ export function* watchUserSignIn(){
 
 export function* watchUserSignOut(){
     yield takeEvery(userActionTypes.USER_SIGN_OUT, userSignOut);
+}
+
+export function* watchUserAlreadySignedIn(){
+    yield takeEvery(userActionTypes.USER_ALREADY_SIGNED, userAlreadySignedIn);
 }

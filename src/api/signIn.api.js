@@ -1,12 +1,18 @@
 import Env from '../environment';
 
-const userSignin = signInInfo => {
+const userSignin = (signInInfo, authToken) => {
+
+    const headers = {
+        'Content-Type': 'application/json',
+    }
+
+    if(authToken){
+        headers['Authorization'] = authToken;
+    }
 
     const postReq = {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify(signInInfo)
     }
 
