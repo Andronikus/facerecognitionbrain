@@ -3,6 +3,7 @@ const userActionTypes = {
     USER_ALREADY_SIGNED: 'USER_ALREADY_SIGNED',
     USER_SIGN_OUT: 'USER_SIGN_OUT',
     SET_USER_INFO: 'SET_USER_INFO',
+    SAVE_USER_PROFILE: 'SAVE_USER_PROFILE',
 }
 
 export default userActionTypes;

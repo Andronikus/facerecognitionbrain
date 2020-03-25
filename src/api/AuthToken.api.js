@@ -2,9 +2,9 @@ const AUTH_TOKEN_NAME = 'sm-token';
 
 export const setAuthToken = (token, storageType='session') => {
     if(storageType && storageType === 'session'){
-        window.sessionStorage.setItem(AUTH_TOKEN_NAME, token);
+        return window.sessionStorage.setItem(AUTH_TOKEN_NAME, token);
     }else{
-        window.localStorage.setItem(AUTH_TOKEN_NAME, token);
+        return window.localStorage.setItem(AUTH_TOKEN_NAME, token);
     }
 }
 

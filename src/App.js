@@ -33,8 +33,6 @@ const particleOptions = {
 
 const initialState = {
   input: '',
-  route: 'signIn',
-  isModelOpen: false,
 }
 
 class App extends Component {
@@ -77,9 +75,7 @@ class App extends Component {
 
   render() {
     let componentsToRender;
-
-    const { isModelOpen } = this.state;
-    const { currentRoute, name, rank, isSignedIn,imageURL,faceBox } = this.props;
+    const { currentRoute, name, rank, isSignedIn,imageURL,faceBox, isModelOpen } = this.props;
 
     switch (currentRoute) {
       case 'signIn':
@@ -118,6 +114,7 @@ const mapStateToProps = (state) => ({
   ...state.user,
   imageURL: state.image.imageURL,
   faceBox: state.image.faceBox,
+  isModelOpen: state.modal.isModelOpen,
 });
 
 const mapDispatchToProps = dispatch => ({

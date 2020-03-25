@@ -2,6 +2,7 @@ import { takeEvery, call, put } from 'redux-saga/effects';
 
 import Api from '../../../api/api';
 import { setUserInfo } from '../../reducers/user/user.action';
+import { toggleModal } from '../../reducers/modal/modal.action';
 import { goHome, goSignIn } from '../../reducers/route/route.action';
 import userActionTypes from '../../reducers/user/user.action.types';
 
@@ -46,6 +47,14 @@ function* userSignOut(){
     }
 }
 
+function* userUpdate(action){
+    const userInfo = action.payload;
+    const authToken = yield call(Api.getAuthToken);
+    yield call(Api.postUserProfile, userInfo, authToken);
+    yield put(setUserInfo(userInfo));
+    yield put(toggleModal());
+}
+
 export function* watchUserSignIn(){
     yield takeEvery(userActionTypes.USER_SIGN_IN, userSignIn);
 }
@@ -56,4 +65,8 @@ export function* watchUserSignOut(){
 
 export function* watchUserAlreadySignedIn(){
     yield takeEvery(userActionTypes.USER_ALREADY_SIGNED, userAlreadySignedIn);
+}
+
+export function* watchUserProfileSave(){
+    yield takeEvery(userActionTypes.SAVE_USER_PROFILE, userUpdate);
 }

@@ -25,3 +25,10 @@ export const setUserInfo = userInfo => {
         payload: userInfo
     }
 }
+
+export const updateUserInfo =  userInfo => {
+    return {
+        type: userActionsTypes.SAVE_USER_PROFILE,
+        payload: userInfo
+    }
+}

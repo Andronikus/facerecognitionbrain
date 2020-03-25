@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Dropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap';
 
 import { userSignOut } from '../../../redux/reducers/user/user.action';
+import { toggleModal } from '../../../redux/reducers/modal/modal.action';
 
 import './ProfileIcon.css';
 
@@ -25,7 +26,7 @@ class ProfileIcon extends React.Component {
 
     viewProfileHandler = () => {
         this.toggle();
-        this.props.toogleModal();
+        this.props.toggleModal();
     }
 
     onLogoutHandler = () => {
@@ -66,6 +67,7 @@ class ProfileIcon extends React.Component {
 
 const mapDispatchToProps = dispatch => ({
     signOut: () => dispatch(userSignOut()),
+    toggleModal: () => dispatch(toggleModal()),
 })
 
 export default connect(null, mapDispatchToProps)(ProfileIcon);
