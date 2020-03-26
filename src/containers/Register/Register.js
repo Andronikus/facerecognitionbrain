@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import {setUserInfo} from '../../redux/reducers/user/user.action';
+
 import Env from '../../environment';
 
 class Register extends Component {
@@ -29,7 +33,7 @@ class Register extends Component {
 	}
 
 	onUserRegister = () => {
-		const {onRouteChange, loadUserInfo} = this.props;
+		const {onRouteChange, setUserInfo} = this.props;
 
 		const data = {
 			name: this.state.name,
@@ -48,7 +52,6 @@ class Register extends Component {
 		fetch(`${Env.SERVER_URL}/register`, postReq)
 			.then(response => response.json())
 			.then(session => {
-				console.log(session);
 				if(session.success && session.userId){
 					
 					fetch(`${Env.SERVER_URL}/profile/${session.userId}`,{
@@ -58,9 +61,9 @@ class Register extends Component {
 						}
 					})
 					.then(res => res.json())
-					.then(data => {
+					.then(user => {
 						this.setAuthTokenInSession(session.token);
-			            loadUserInfo({...data, rank: data.entries});
+						setUserInfo({...user, rank: user.entries, joinedAt: user.joined_at});
 			            onRouteChange('home');
 					})
 					.catch(console.log);
@@ -119,4 +122,8 @@ class Register extends Component {
 	}
 }
 
-export default Register;
+const mapDispatchToProps = dispatch => ({
+	setUserInfo: userInfo => dispatch(setUserInfo(userInfo)),
+})
+
+export default connect(null, mapDispatchToProps)(Register);

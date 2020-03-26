@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import Env from '../../environment';
+import { connect } from 'react-redux';
+
+import {userSignIn} from '../../redux/reducers/user/user.action';
 
 class SignIn extends Component {
 
@@ -24,40 +26,8 @@ class SignIn extends Component {
 	}
 
 	onFormSubmit = () => {
-		const data = {
-			email: this.state.signInEmail,
-			password: this.state.signInPassword
-		}
-
-		const { loadUserInfo, onRouteChange } = this.props;
-
-		const postReq = {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(data)
-		}
-
-		fetch(`${Env.SERVER_URL}/signin`, postReq)
-			.then(response => response.json())
-			.then(session => {
-				if (session && session.userId && session.token) {
-					fetch(`${Env.SERVER_URL}/profile/${session.userId}`, {
-			            headers: {
-			              'Content-Type': 'application/json',
-			              'Authorization': session.token
-			            }
-			        })
-			        .then(res => res.json())
-			        .then(data => {
-			        	this.setAuthTokenInSession(session.token);
-			            loadUserInfo({...data, rank: data.entries});
-			            onRouteChange('home');
-			        })
-			        .catch(console.log);
-				}
-		})
+		const {signInEmail, signInPassword} = this.state;
+		this.props.userSignIn({email:signInEmail, password: signInPassword});
 	}
 
 	render() {
@@ -106,4 +76,8 @@ class SignIn extends Component {
 	}
 }
 
-export default SignIn;
+const mapDispatcToProps = dispatch => ({
+	userSignIn: (userSignInInfo) => dispatch(userSignIn(userSignInInfo)),
+})
+
+export default connect(null, mapDispatcToProps)(SignIn);
